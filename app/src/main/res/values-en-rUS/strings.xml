@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">AppTrab</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string-array name="Animal">
+
+        <item>Select the type of animal...</item>
+        <item>Dog </item>
+        <item>Cat </item>
+        <item>Hamster </item>
+
+    </string-array>
+
+    <string name="cadastroanimais">Animal Registration</string>
+    <string name="nome">Name </string>
+    <string name="nomehint">Enter your name... </string>
+    <string name="petnome">Pet </string>
+    <string name="nomepethint">Enter your pets name... </string>
+    <string name="idadepethint">Enter your pets age... </string>
+    <string name="salvar">Accept </string>
+
+</resources>

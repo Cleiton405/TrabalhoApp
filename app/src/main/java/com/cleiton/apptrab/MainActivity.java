@@ -1,0 +1,152 @@
+package com.cleiton.apptrab;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.View;
+
+import android.view.Menu;
+
+import android.view.MenuItem;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    private ListView lvPets;
+    private ArrayAdapter adapter;
+    private List <Pets> ListaDePets;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+
+        lvPets = findViewById(R.id.lvPets);
+        carregarPets();
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            Intent intent = new Intent(MainActivity.this, CadastroActivity.class);
+            intent.putExtra("acao", "inserir");
+            startActivity(intent);
+
+            }
+        });
+
+        lvPets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                int idPets = ListaDePets.get(position).getId();
+                Intent intent = new Intent(MainActivity.this, CadastroActivity.class);
+                intent.putExtra("acao", "editar");
+                intent.putExtra("idPets", idPets);
+                startActivity(intent);
+
+            }
+        });
+
+        lvPets.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                excluir(position);
+
+                return true;
+            }
+        });
+
+    }
+
+    private void excluir(int posicao){
+
+        Pets pets = ListaDePets.get(posicao);
+
+        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+        alerta.setTitle("Exclusão");
+        alerta.setIcon(android.R.drawable.ic_delete);
+        alerta.setMessage("Você deseja realmente excluir" + pets.getNome() + "?");
+        alerta.setNegativeButton("Cancelar", null);
+
+        alerta.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                PetsDAO.excluir(MainActivity.this, pets.getId());
+                carregarPets();
+
+            }
+        });
+        alerta.show();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        carregarPets();
+
+    }
+
+    private void carregarPets(){
+
+        ListaDePets = PetsDAO.getPets(this);
+        if(ListaDePets.size() == 0){
+
+            Pets fake = new Pets("Lista vazia","", "", "");
+            ListaDePets.add(fake);
+
+            lvPets.setEnabled(false);
+
+        }else {
+
+            lvPets.setEnabled(true);
+
+        }
+
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, ListaDePets );
+        lvPets.setAdapter(adapter);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+}
